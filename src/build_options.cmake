@@ -416,6 +416,18 @@ function(require_sdl2)
             DOC "SDL2 Library"
 	    HINTS ${PC_SDL2_LIBDIR} ${PC_SDL2_LIBRARY_DIRS} )
 
+    elseif(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+        include(FindPkgConfig)
+        pkg_search_module(PC_SDL2 REQUIRED sdl2)
+
+        find_path(SDL2_INCLUDE SDL.h
+            DOC "SDL2 Include Path"
+	    HINTS ${PC_SDL2_INCLUDEDIR} ${PC_SDL2_INCLUDE_DIRS} )
+
+        find_library(SDL2_LIBRARY SDL2
+            DOC "SDL2 Library"
+	    HINTS ${PC_SDL2_LIBDIR} ${PC_SDL2_LIBRARY_DIRS} )
+
     elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         include(FindPkgConfig)
         pkg_search_module(PC_SDL2 REQUIRED sdl2)
@@ -566,6 +578,10 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set( LIBRT rt )
     set( LIBDL dl )
 
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+    set( LIBRT rt )
+    set( LIBDL dl )
+
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set( LIBRT "" )
     set( LIBDL "" )
@@ -580,6 +596,9 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_compiler_flag("-DPLATFORM_POSIX=1")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     add_compiler_flag("-DPLATFORM_LINUX=1")
+    add_compiler_flag("-DPLATFORM_POSIX=1")
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+    add_compiler_flag("-DPLATFORM_FREEBSD=1")
     add_compiler_flag("-DPLATFORM_POSIX=1")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_compiler_flag("-DPLATFORM_WINDOWS=1")
